@@ -44,7 +44,7 @@ paths:
         '400':
           description: Invalid user supplied
         '409':
-          description: Duplicate user Id. Return 0
+          description: Duplicate company id and user Id
         '422':
           description: Validation errors
           content:
@@ -55,7 +55,7 @@ paths:
                   $ref: '#/components/schemas/Error'
         '500':
           description: Internal Server Error
-  /users/{userId}:
+  /users/{companyId}/{userId}:
     get:
       tags:
         - user
@@ -63,10 +63,18 @@ paths:
       description: 'Get a user by Id'
       operationId: getUserById
       parameters:
+        - name: companyId
+          in: path
+          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          required: true
+          example: c1
+          schema:
+            type: string
         - name: userId
           in: path
-          description: 'The userId that needs to be fetched. Use spiderman for testing. '
+          description: 'The userId that needs to be fetched. Use spiderman for testing.'
           required: true
+          example: spiderman
           schema:
             type: string
       responses:
@@ -89,10 +97,18 @@ paths:
       description: Update a user.
       operationId: updateUser
       parameters:
+        - name: companyId
+          in: path
+          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          required: true
+          example: c1
+          schema:
+            type: string
         - name: userId
           in: path
-          description: user that need to be updated
+          description: 'The userId that needs to be fetched. Use spiderman for testing.'
           required: true
+          example: spiderman
           schema:
             type: string
       requestBody:
@@ -131,10 +147,18 @@ paths:
       description: Perform a partial update of a user.
       operationId: patchUser
       parameters:
+        - name: companyId
+          in: path
+          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          required: true
+          example: c1
+          schema:
+            type: string
         - name: userId
           in: path
-          description: user that need to be update partially
+          description: 'The userId that needs to be fetched. Use spiderman for testing.'
           required: true
+          example: spiderman
           schema:
             type: string
       requestBody:
@@ -173,10 +197,18 @@ paths:
       description: Delete a user by Id.
       operationId: deleteUser
       parameters:
+        - name: companyId
+          in: path
+          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          required: true
+          example: c1
+          schema:
+            type: string
         - name: userId
           in: path
-          description: The userId that needs to be deleted
+          description: 'The userId that needs to be fetched. Use spiderman for testing.'
           required: true
+          example: spiderman
           schema:
             type: string
       responses:
@@ -189,11 +221,7 @@ paths:
         '400':
           description: Invalid userId supplied
         '404':
-          description: User not found. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: User not found
         '500':
           description: Internal Server Error
   /users/search:
@@ -227,7 +255,7 @@ paths:
           description: 'The companyId that needs to be fetched'
           schema:
             type: string
-            example: company1
+            example: c1
         - name: userId
           in: query
           description: 'The userId that needs to be fetched'
@@ -332,7 +360,7 @@ components:
       properties:
         companyId:
           type: string
-          example: 'c2'
+          example: 'c1'
         userId:
           type: string
           example: 'wolverine'
