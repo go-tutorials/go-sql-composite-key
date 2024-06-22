@@ -34,16 +34,29 @@ type UserHandler struct {
 	filterIndex int
 }
 
+func (h *UserHandler) All(w http.ResponseWriter, r *http.Request) {
+	users, err := h.service.All(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON(w, http.StatusOK, users)
+}
 func (h *UserHandler) Load(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	if len(id) == 0 {
-		http.Error(w, "Id cannot be empty", http.StatusBadRequest)
+	companyId := mux.Vars(r)["companyId"]
+	if len(companyId) == 0 {
+		http.Error(w, "companyId cannot be empty", http.StatusBadRequest)
+		return
+	}
+	userId := mux.Vars(r)["userId"]
+	if len(userId) == 0 {
+		http.Error(w, "userId cannot be empty", http.StatusBadRequest)
 		return
 	}
 
-	user, err := h.service.Load(r.Context(), id)
+	user, err := h.service.Load(r.Context(), companyId, userId)
 	if err != nil {
-		h.LogError(r.Context(), fmt.Sprintf("Error to get user %s: %s", id, err.Error()))
+		h.LogError(r.Context(), fmt.Sprintf("Error to get user %s %s: %s", companyId, userId, err.Error()))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -91,17 +104,30 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, er1.Error(), http.StatusBadRequest)
 		return
 	}
-	id := mux.Vars(r)["id"]
-	if len(id) == 0 {
-		http.Error(w, "Id cannot be empty", http.StatusBadRequest)
+	companyId := mux.Vars(r)["companyId"]
+	if len(companyId) == 0 {
+		http.Error(w, "companyId cannot be empty", http.StatusBadRequest)
 		return
 	}
-	if len(user.Id) == 0 {
-		user.Id = id
-	} else if id != user.Id {
-		http.Error(w, "Id not match", http.StatusBadRequest)
+	if len(user.CompanyId) == 0 {
+		user.CompanyId = companyId
+	} else if companyId != user.CompanyId {
+		http.Error(w, "companyId not match", http.StatusBadRequest)
 		return
 	}
+
+	userId := mux.Vars(r)["userId"]
+	if len(userId) == 0 {
+		http.Error(w, "userId cannot be empty", http.StatusBadRequest)
+		return
+	}
+	if len(user.UserId) == 0 {
+		user.UserId = userId
+	} else if userId != user.UserId {
+		http.Error(w, "userId not match", http.StatusBadRequest)
+		return
+	}
+
 	errors, er2 := h.Validate(r.Context(), &user)
 	if er2 != nil {
 		h.LogError(r.Context(), er2.Error(), MakeMap(user))
@@ -118,7 +144,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, er3.Error(), http.StatusInternalServerError)
 		return
 	}
-	if res < 1 {
+	if res < 0 {
 		JSON(w, http.StatusConflict, res)
 	} else if res == 0 {
 		JSON(w, http.StatusNotFound, res)
@@ -127,9 +153,14 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	if len(id) == 0 {
-		http.Error(w, "Id cannot be empty", http.StatusBadRequest)
+	companyId := mux.Vars(r)["companyId"]
+	if len(companyId) == 0 {
+		http.Error(w, "companyId cannot be empty", http.StatusBadRequest)
+		return
+	}
+	userId := mux.Vars(r)["userId"]
+	if len(userId) == 0 {
+		http.Error(w, "userId cannot be empty", http.StatusBadRequest)
 		return
 	}
 
@@ -139,13 +170,20 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, er1.Error(), http.StatusInternalServerError)
 		return
 	}
-	if len(user.Id) == 0 {
-		user.Id = id
-	} else if id != user.Id {
+	if len(user.CompanyId) == 0 {
+		user.CompanyId = companyId
+	} else if companyId != user.CompanyId {
 		http.Error(w, "Id not match", http.StatusBadRequest)
 		return
 	}
-	json, er2 := core.BodyToJsonMap(r, user, body, []string{"id"}, h.jsonMap)
+	if len(user.UserId) == 0 {
+		user.UserId = userId
+	} else if userId != user.UserId {
+		http.Error(w, "userId not match", http.StatusBadRequest)
+		return
+	}
+
+	jsonUser, er2 := core.BodyToJsonMap(r, user, body, []string{"companyId", "userId"}, h.jsonMap)
 	if er2 != nil {
 		http.Error(w, er2.Error(), http.StatusInternalServerError)
 		return
@@ -161,29 +199,34 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		JSON(w, http.StatusUnprocessableEntity, errors)
 		return
 	}
-	res, er4 := h.service.Patch(r.Context(), json)
+	res, er4 := h.service.Patch(r.Context(), jsonUser)
 	if er4 != nil {
 		h.LogError(r.Context(), er4.Error(), MakeMap(user))
 		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
-	if res < 1 {
+	if res < 0 {
 		JSON(w, http.StatusConflict, res)
 	} else if res == 0 {
 		JSON(w, http.StatusNotFound, res)
 	} else {
-		JSON(w, http.StatusOK, user)
+		JSON(w, http.StatusOK, jsonUser)
 	}
 }
 func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	if len(id) == 0 {
-		http.Error(w, "Id cannot be empty", http.StatusBadRequest)
+	companyId := mux.Vars(r)["companyId"]
+	if len(companyId) == 0 {
+		http.Error(w, "companyId cannot be empty", http.StatusBadRequest)
 		return
 	}
-	res, err := h.service.Delete(r.Context(), id)
+	userId := mux.Vars(r)["userId"]
+	if len(userId) == 0 {
+		http.Error(w, "userId cannot be empty", http.StatusBadRequest)
+		return
+	}
+	res, err := h.service.Delete(r.Context(), companyId, userId)
 	if err != nil {
-		h.LogError(r.Context(), fmt.Sprintf("Error to delete user %s: %s", id, err.Error()))
+		h.LogError(r.Context(), fmt.Sprintf("Error to delete user %s %s: %s", companyId, userId, err.Error()))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -196,9 +239,13 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 	filter := model.UserFilter{Filter: &s.Filter{}}
 	s.Decode(r, &filter, h.paramIndex, h.filterIndex)
-
+	offset := s.GetOffset(filter.Limit, filter.Page)
 	var users []model.User
-	users, total, err := h.service.Search(r.Context(), &filter)
+	if filter.Limit <= 0 {
+		JSON(w, http.StatusOK, &s.Result{List: users, Total: 0})
+		return
+	}
+	users, total, err := h.service.Search(r.Context(), &filter, filter.Limit, offset)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

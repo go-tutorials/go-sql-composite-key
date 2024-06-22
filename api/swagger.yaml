@@ -45,10 +45,6 @@ paths:
           description: Invalid user supplied
         '409':
           description: Duplicate user Id. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
         '422':
           description: Validation errors
           content:
@@ -115,17 +111,9 @@ paths:
         '400':
           description: Invalid user supplied
         '404':
-          description: User not found. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: User not found
         '409':
-          description: Conflict between multiple simultaneous updates. Return -1
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: Conflict between multiple simultaneous updates
         '422':
           description: Validation errors
           content:
@@ -165,17 +153,9 @@ paths:
         '400':
           description: Invalid user supplied
         '404':
-          description: User not found. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: User not found
         '409':
-          description: Conflict between multiple simultaneous updates. Return -1
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: Conflict between multiple simultaneous updates
         '422':
           description: Validation errors
           content:
@@ -242,6 +222,12 @@ paths:
           schema:
             type: string
             example: phone,-id
+        - name: companyId
+          in: query
+          description: 'The companyId that needs to be fetched'
+          schema:
+            type: string
+            example: company1
         - name: userId
           in: query
           description: 'The userId that needs to be fetched'
@@ -344,7 +330,10 @@ components:
         - username
         - phone
       properties:
-        id:
+        companyId:
+          type: string
+          example: 'c2'
+        userId:
           type: string
           example: 'wolverine'
         username:
@@ -371,7 +360,10 @@ components:
           type: integer
           description: 'Maximum of numbers of users'
           example: 20
-        id:
+        companyId:
+          type: string
+          example: 'c1'
+        userId:
           type: string
           example: 'wolverine'
         username:

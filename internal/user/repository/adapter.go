@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/core-go/search/query"
 	s "github.com/core-go/sql"
 
 	"go-service/internal/user/model"
@@ -15,13 +14,7 @@ import (
 
 func NewUserAdapter(db *sql.DB, buildQuery func(*model.UserFilter) (string, []interface{})) (*UserAdapter, error) {
 	userType := reflect.TypeOf(model.User{})
-	if buildQuery == nil {
-		userQueryBuilder := query.NewBuilder(db, "users", userType)
-		buildQuery = func(filter *model.UserFilter) (s string, i []interface{}) {
-			return userQueryBuilder.BuildQuery(filter)
-		}
-	}
-	fieldsIndex, _, jsonColumnMap, keys, _, _, buildParam, _,  err := s.Init(userType, db)
+	fieldsIndex, _, jsonColumnMap, keys, _, _, buildParam, _, err := s.Init(userType, db)
 	if err != nil {
 		return nil, err
 	}
@@ -37,16 +30,47 @@ type UserAdapter struct {
 	BuildQuery    func(*model.UserFilter) (string, []interface{})
 }
 
-func (r *UserAdapter) Load(ctx context.Context, id string) (*model.User, error) {
+func (r *UserAdapter) All(ctx context.Context) ([]model.User, error) {
 	query := `
 		select
-			id, 
+			company_id,
+			user_id,
 			username,
 			email,
 			phone,
 			date_of_birth
-		from users where id = $1`
-	rows, err := r.DB.QueryContext(ctx, query, id)
+		from company_users`
+	rows, err := r.DB.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var users []model.User
+	for rows.Next() {
+		var user model.User
+		err = rows.Scan(
+			&user.CompanyId,
+			&user.UserId,
+			&user.Username,
+			&user.Email,
+			&user.Phone,
+			&user.DateOfBirth)
+		users = append(users, user)
+	}
+	return users, nil
+}
+
+func (r *UserAdapter) Load(ctx context.Context, companyId string, userId string) (*model.User, error) {
+	query := `
+		select
+			company_id,
+			user_id,
+			username,
+			email,
+			phone,
+			date_of_birth
+		from company_users where company_id = $1 and user_id = $2`
+	rows, err := r.DB.QueryContext(ctx, query, companyId, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +78,8 @@ func (r *UserAdapter) Load(ctx context.Context, id string) (*model.User, error) 
 	for rows.Next() {
 		var user model.User
 		err = rows.Scan(
-			&user.Id,
+			&user.CompanyId,
+			&user.UserId,
 			&user.Username,
 			&user.Email,
 			&user.Phone,
@@ -66,8 +91,9 @@ func (r *UserAdapter) Load(ctx context.Context, id string) (*model.User, error) 
 
 func (r *UserAdapter) Create(ctx context.Context, user *model.User) (int64, error) {
 	query := `
-		insert into users (
-			id,
+		insert into company_users (
+			company_id,
+			user_id,
 			username,
 			email,
 			phone,
@@ -77,20 +103,18 @@ func (r *UserAdapter) Create(ctx context.Context, user *model.User) (int64, erro
 			$2,
 			$3, 
 			$4,
-			$5)`
-	stmt, err := r.DB.Prepare(query)
-	if err != nil {
-		return -1, nil
-	}
-	res, err := stmt.ExecContext(ctx,
-		user.Id,
+			$5,
+			$6)`
+	res, err := r.DB.ExecContext(ctx, query,
+		user.CompanyId,
+		user.UserId,
 		user.Username,
 		user.Email,
 		user.Phone,
 		user.DateOfBirth)
 	if err != nil {
-		if strings.Index(err.Error(), "duplicate key") >= 0 {
-			return -1, nil
+		if strings.Contains(err.Error(), "duplicate key") {
+			return 0, err
 		}
 		return -1, err
 	}
@@ -99,23 +123,20 @@ func (r *UserAdapter) Create(ctx context.Context, user *model.User) (int64, erro
 
 func (r *UserAdapter) Update(ctx context.Context, user *model.User) (int64, error) {
 	query := `
-		update users 
+		update company_users 
 		set
 			username = $1,
 			email = $2,
 			phone = $3,
 			date_of_birth = $4
-		where id = $5`
-	stmt, err := r.DB.Prepare(query)
-	if err != nil {
-		return -1, nil
-	}
-	res, err := stmt.ExecContext(ctx,
+		where company_id = $5 and user_id = $6`
+	res, err := r.DB.ExecContext(ctx, query,
 		user.Username,
 		user.Email,
 		user.Phone,
 		user.DateOfBirth,
-		user.Id)
+		user.CompanyId,
+		user.UserId)
 	if err != nil {
 		return -1, err
 	}
@@ -128,7 +149,7 @@ func (r *UserAdapter) Update(ctx context.Context, user *model.User) (int64, erro
 
 func (r *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
 	colMap := s.JSONToColumns(user, r.JsonColumnMap)
-	query, args := s.BuildToPatch("users", colMap, r.Keys, r.BuildParam)
+	query, args := s.BuildToPatch("company_users", colMap, r.Keys, r.BuildParam)
 	res, err := r.DB.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
@@ -136,23 +157,22 @@ func (r *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (i
 	return res.RowsAffected()
 }
 
-func (r *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
-	query := "delete from users where id = $1"
-	res, err := r.DB.ExecContext(ctx, query, id)
+func (r *UserAdapter) Delete(ctx context.Context, companyId string, userId string) (int64, error) {
+	query := "delete from company_users where company_id = $1 and user_id = $2"
+	res, err := r.DB.ExecContext(ctx, query, companyId, userId)
 	if err != nil {
 		return -1, err
 	}
 	return res.RowsAffected()
 }
 
-func (r *UserAdapter) Search(ctx context.Context, filter *model.UserFilter) ([]model.User, int64, error) {
+func (r *UserAdapter) Search(ctx context.Context, filter *model.UserFilter, limit int64, offset int64) ([]model.User, int64, error) {
 	var users []model.User
 	if filter.Limit <= 0 {
 		return users, 0, nil
 	}
 	query, params := r.BuildQuery(filter)
-	offset := s.GetOffset(filter.Limit, filter.Page)
-	pagingQuery := s.BuildPagingQuery(query, filter.Limit, offset)
+	pagingQuery := s.BuildPagingQuery(query, limit, offset)
 	countQuery := s.BuildCountQuery(query)
 
 	row := r.DB.QueryRowContext(ctx, countQuery, params...)
@@ -170,7 +190,7 @@ func (r *UserAdapter) Search(ctx context.Context, filter *model.UserFilter) ([]m
 }
 
 func BuildQuery(filter *model.UserFilter) (string, []interface{}) {
-	query := "select * from users"
+	query := "select * from company_users"
 	where, params := BuildFilter(filter)
 	if len(where) > 0 {
 		query = query + " where " + where
@@ -182,9 +202,14 @@ func BuildFilter(filter *model.UserFilter) (string, []interface{}) {
 	var where []string
 	var params []interface{}
 	i := 1
-	if len(filter.Id) > 0 {
-		params = append(params, filter.Id)
-		where = append(where, fmt.Sprintf(`id = %s`, buildParam(i)))
+	if len(filter.CompanyId) > 0 {
+		params = append(params, filter.CompanyId)
+		where = append(where, fmt.Sprintf(`company_id = %s`, buildParam(i)))
+		i++
+	}
+	if len(filter.UserId) > 0 {
+		params = append(params, filter.UserId)
+		where = append(where, fmt.Sprintf(`user_id = %s`, buildParam(i)))
 		i++
 	}
 	if filter.DateOfBirth != nil {

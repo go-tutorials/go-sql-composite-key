@@ -22,12 +22,13 @@ func Route(ctx context.Context, r *mux.Router, cfg Config) error {
 	r.HandleFunc("/health", app.Health.Check).Methods(GET)
 
 	user := "/users"
+	r.HandleFunc(user, app.User.All).Methods(GET)
 	r.HandleFunc(user+"/search", app.User.Search).Methods(GET, POST)
-	r.HandleFunc(user+"/{id}", app.User.Load).Methods(GET)
+	r.HandleFunc(user+"/{companyId}/{userId}", app.User.Load).Methods(GET)
 	r.HandleFunc(user, app.User.Create).Methods(POST)
-	r.HandleFunc(user+"/{id}", app.User.Update).Methods(PUT)
-	r.HandleFunc(user+"/{id}", app.User.Patch).Methods(PATCH)
-	r.HandleFunc(user+"/{id}", app.User.Delete).Methods(DELETE)
+	r.HandleFunc(user+"/{companyId}/{userId}", app.User.Update).Methods(PUT)
+	r.HandleFunc(user+"/{companyId}/{userId}", app.User.Patch).Methods(PATCH)
+	r.HandleFunc(user+"/{companyId}/{userId}", app.User.Delete).Methods(DELETE)
 
 	return nil
 }

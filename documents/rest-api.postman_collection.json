@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "d23308c6-5cbb-4f60-96cf-fbceb00f6a59",
-		"name": "rest-api",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "e93b5134-9ec1-47f3-8a67-0cd5f8fcfdcb",
+		"name": "rest-api-composite-key",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17364528"
 	},
 	"item": [
 		{
@@ -15,9 +16,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -53,9 +53,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -91,9 +90,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -106,7 +104,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/wolverine",
+					"raw": "http://localhost:8080/users/c2/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -114,6 +112,7 @@
 					"port": "8080",
 					"path": [
 						"users",
+						"c2",
 						"wolverine"
 					]
 				}
@@ -127,14 +126,13 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"wolverine\",\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654321\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
+					"raw": "{\n    \"companyId\": \"c1\",\n    \"userId\": \"wolverine\",\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654321\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -162,14 +160,13 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654321\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
+					"raw": "{\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654322\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -177,7 +174,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/wolverine",
+					"raw": "http://localhost:8080/users/c2/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -185,6 +182,7 @@
 					"port": "8080",
 					"path": [
 						"users",
+						"c2",
 						"wolverine"
 					]
 				}
@@ -198,9 +196,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -213,7 +210,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/wolverine",
+					"raw": "http://localhost:8080/users/c2/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -221,6 +218,7 @@
 					"port": "8080",
 					"path": [
 						"users",
+						"c2",
 						"wolverine"
 					]
 				}
@@ -234,9 +232,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -265,19 +262,83 @@
 		},
 		{
 			"name": "search users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "Content-Type",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/search?page=1&limit=2&email=james&dateOfBirth.min=1974-11-15T17:00:00.000Z&dateOfBirth.max=1976-11-15T17:00:00.000Z&sort=phone,-id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"search"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "email",
+							"value": "james"
+						},
+						{
+							"key": "dateOfBirth.min",
+							"value": "1974-11-15T17:00:00.000Z"
+						},
+						{
+							"key": "dateOfBirth.max",
+							"value": "1976-11-15T17:00:00.000Z"
+						},
+						{
+							"key": "sort",
+							"value": "phone,-id"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search users",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"pageIndex\": 1,\n    \"pageSize\": 20,\n    \"username\": \"james.howlett\",\n    \"email\": \"james\",\n    \"phone\": \"0987654321\",\n    \"sort\": \"phone\"\n}",
+					"raw": "{\n    \"page\": 1,\n    \"limit\": 20,\n    \"username\": \"james.howlett\",\n    \"email\": \"james\",\n    \"phone\": \"0987654321\",\n    \"sort\": \"phone\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
