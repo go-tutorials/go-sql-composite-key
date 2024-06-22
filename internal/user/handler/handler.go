@@ -54,7 +54,8 @@ func (h *UserHandler) Load(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.service.Load(r.Context(), companyId, userId)
+	id := model.UserId{CompanyId: companyId, UserId: userId}
+	user, err := h.service.Load(r.Context(), id)
 	if err != nil {
 		h.LogError(r.Context(), fmt.Sprintf("Error to get user %s %s: %s", companyId, userId, err.Error()))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -224,7 +225,9 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "userId cannot be empty", http.StatusBadRequest)
 		return
 	}
-	res, err := h.service.Delete(r.Context(), companyId, userId)
+
+	id := model.UserId{CompanyId: companyId, UserId: userId}
+	res, err := h.service.Delete(r.Context(), id)
 	if err != nil {
 		h.LogError(r.Context(), fmt.Sprintf("Error to delete user %s %s: %s", companyId, userId, err.Error()))
 		http.Error(w, err.Error(), http.StatusInternalServerError)

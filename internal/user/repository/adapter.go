@@ -60,7 +60,7 @@ func (r *UserAdapter) All(ctx context.Context) ([]model.User, error) {
 	return users, nil
 }
 
-func (r *UserAdapter) Load(ctx context.Context, companyId string, userId string) (*model.User, error) {
+func (r *UserAdapter) Load(ctx context.Context, id model.UserId) (*model.User, error) {
 	query := `
 		select
 			company_id,
@@ -70,7 +70,7 @@ func (r *UserAdapter) Load(ctx context.Context, companyId string, userId string)
 			phone,
 			date_of_birth
 		from company_users where company_id = $1 and user_id = $2`
-	rows, err := r.DB.QueryContext(ctx, query, companyId, userId)
+	rows, err := r.DB.QueryContext(ctx, query, id.CompanyId, id.UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -157,9 +157,9 @@ func (r *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (i
 	return res.RowsAffected()
 }
 
-func (r *UserAdapter) Delete(ctx context.Context, companyId string, userId string) (int64, error) {
+func (r *UserAdapter) Delete(ctx context.Context, id model.UserId) (int64, error) {
 	query := "delete from company_users where company_id = $1 and user_id = $2"
-	res, err := r.DB.ExecContext(ctx, query, companyId, userId)
+	res, err := r.DB.ExecContext(ctx, query, id.CompanyId, id.UserId)
 	if err != nil {
 		return -1, err
 	}

@@ -2,6 +2,11 @@ package model
 
 import "time"
 
+type UserId struct {
+	CompanyId string `yaml:"company_id" mapstructure:"company_id" json:"companyId" gorm:"column:company_id;primary_key" dynamodbav:"companyId" firestore:"-" avro:"companyId" validate:"required,max=40" operator:"="`
+	UserId    string `yaml:"user_id" mapstructure:"user_id" json:"userId" gorm:"column:user_id;primary_key" dynamodbav:"userId" firestore:"-" avro:"userId" validate:"required,max=40" operator:"="`
+}
+
 type User struct {
 	CompanyId   string     `yaml:"company_id" mapstructure:"company_id" json:"companyId" gorm:"column:company_id;primary_key" dynamodbav:"companyId" firestore:"-" avro:"companyId" validate:"required,max=40" operator:"="`
 	UserId      string     `yaml:"user_id" mapstructure:"user_id" json:"userId" gorm:"column:user_id;primary_key" dynamodbav:"userId" firestore:"-" avro:"userId" validate:"required,max=40" operator:"="`

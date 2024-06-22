@@ -246,7 +246,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/wolverine",
+					"raw": "http://localhost:8080/users/c1/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -254,6 +254,7 @@
 					"port": "8080",
 					"path": [
 						"users",
+						"c1",
 						"wolverine"
 					]
 				}

@@ -18,8 +18,8 @@ type UserUseCase struct {
 func (s *UserUseCase) All(ctx context.Context) ([]model.User, error) {
 	return s.repository.All(ctx)
 }
-func (s *UserUseCase) Load(ctx context.Context, companyId string, userId string) (*model.User, error) {
-	return s.repository.Load(ctx, companyId, userId)
+func (s *UserUseCase) Load(ctx context.Context, id model.UserId) (*model.User, error) {
+	return s.repository.Load(ctx, id)
 }
 func (s *UserUseCase) Create(ctx context.Context, user *model.User) (int64, error) {
 	return s.repository.Create(ctx, user)
@@ -30,8 +30,8 @@ func (s *UserUseCase) Update(ctx context.Context, user *model.User) (int64, erro
 func (s *UserUseCase) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
 	return s.repository.Patch(ctx, user)
 }
-func (s *UserUseCase) Delete(ctx context.Context, companyId string, userId string) (int64, error) {
-	return s.repository.Delete(ctx, companyId, userId)
+func (s *UserUseCase) Delete(ctx context.Context, id model.UserId) (int64, error) {
+	return s.repository.Delete(ctx, id)
 }
 func (s *UserUseCase) Search(ctx context.Context, filter *model.UserFilter, limit int64, offset int64) ([]model.User, int64, error) {
 	return s.repository.Search(ctx, filter, limit, offset)
