@@ -104,7 +104,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/c2/wolverine",
+					"raw": "http://localhost:8080/users/marvel/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -112,7 +112,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"c2",
+						"marvel",
 						"wolverine"
 					]
 				}
@@ -132,7 +132,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"companyId\": \"c1\",\n    \"userId\": \"wolverine\",\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654321\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
+					"raw": "{\n    \"companyId\": \"marvel\",\n    \"userId\": \"wolverine\",\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654321\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -166,7 +166,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654322\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
+					"raw": "{\n    \"username\": \"james.howlett\",\n    \"email\": \"james.howlett@gmail.com\",\n    \"phone\": \"0987654321\",\n    \"dateOfBirth\": \"1974-11-16T00:00:00+07:00\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -174,7 +174,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/c2/wolverine",
+					"raw": "http://localhost:8080/users/marvel/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -182,7 +182,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"c2",
+						"marvel",
 						"wolverine"
 					]
 				}
@@ -210,7 +210,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/c2/wolverine",
+					"raw": "http://localhost:8080/users/marvel/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -218,7 +218,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"c2",
+						"marvel",
 						"wolverine"
 					]
 				}
@@ -246,7 +246,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/c1/wolverine",
+					"raw": "http://localhost:8080/users/marvel/wolverine",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -254,7 +254,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"c1",
+						"marvel",
 						"wolverine"
 					]
 				}

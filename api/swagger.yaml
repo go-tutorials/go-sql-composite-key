@@ -65,9 +65,9 @@ paths:
       parameters:
         - name: companyId
           in: path
-          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          description: 'The companyId that needs to be fetched. Use marvel for testing.'
           required: true
-          example: c1
+          example: marvel
           schema:
             type: string
         - name: userId
@@ -99,9 +99,9 @@ paths:
       parameters:
         - name: companyId
           in: path
-          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          description: 'The companyId that needs to be fetched. Use marvel for testing.'
           required: true
-          example: c1
+          example: marvel
           schema:
             type: string
         - name: userId
@@ -149,9 +149,9 @@ paths:
       parameters:
         - name: companyId
           in: path
-          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          description: 'The companyId that needs to be fetched. Use marvel for testing.'
           required: true
-          example: c1
+          example: marvel
           schema:
             type: string
         - name: userId
@@ -199,9 +199,9 @@ paths:
       parameters:
         - name: companyId
           in: path
-          description: 'The companyId that needs to be fetched. Use c1 for testing.'
+          description: 'The companyId that needs to be fetched. Use marvel for testing.'
           required: true
-          example: c1
+          example: marvel
           schema:
             type: string
         - name: userId
@@ -255,7 +255,7 @@ paths:
           description: 'The companyId that needs to be fetched'
           schema:
             type: string
-            example: c1
+            example: marvel
         - name: userId
           in: query
           description: 'The userId that needs to be fetched'
@@ -360,7 +360,7 @@ components:
       properties:
         companyId:
           type: string
-          example: 'c1'
+          example: 'marvel'
         userId:
           type: string
           example: 'wolverine'
@@ -390,7 +390,7 @@ components:
           example: 20
         companyId:
           type: string
-          example: 'c1'
+          example: 'marvel'
         userId:
           type: string
           example: 'wolverine'

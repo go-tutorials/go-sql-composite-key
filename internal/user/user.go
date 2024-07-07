@@ -29,6 +29,7 @@ func NewUserHandler(db *sql.DB, logError func(context.Context, string, ...map[st
 	}
 
 	userRepository, err := repository.NewUserAdapter(db, repository.BuildQuery)
+	// userRepository, err := adapter.NewSearchAdapter[model.User, model.UserId, *model.UserFilter](db, "company_users", repository.BuildQuery)
 	if err != nil {
 		return nil, err
 	}
