@@ -8,7 +8,7 @@ import (
 	v "github.com/core-go/core/v10"
 
 	"go-service/internal/user/handler"
-	"go-service/internal/user/repository"
+	"go-service/internal/user/repository/adapter"
 	"go-service/internal/user/service"
 )
 
@@ -28,7 +28,7 @@ func NewUserHandler(db *sql.DB, logError func(context.Context, string, ...map[st
 		return nil, err
 	}
 
-	userRepository, err := repository.NewUserAdapter(db, repository.BuildQuery)
+	userRepository, err := adapter.NewUserAdapter(db, adapter.BuildQuery)
 	// userRepository, err := adapter.NewSearchAdapter[model.User, model.UserId, *model.UserFilter](db, "company_users", repository.BuildQuery)
 	if err != nil {
 		return nil, err
