@@ -6,9 +6,11 @@ import (
 	"net/http"
 
 	v "github.com/core-go/core/v10"
+	"github.com/core-go/search/query"
+	"github.com/core-go/sql/adapter"
 
 	"go-service/internal/user/handler"
-	"go-service/internal/user/repository/adapter"
+	"go-service/internal/user/model"
 	"go-service/internal/user/service"
 )
 
@@ -28,8 +30,9 @@ func NewUserHandler(db *sql.DB, logError func(context.Context, string, ...map[st
 		return nil, err
 	}
 
-	userRepository, err := adapter.NewUserAdapter(db, adapter.BuildQuery)
-	// userRepository, err := adapter.NewSearchAdapter[model.User, model.UserId, *model.UserFilter](db, "company_users", repository.BuildQuery)
+	buildQuery := query.UseQuery[model.User, *model.UserFilter](db, "company_users")
+	userRepository, err := adapter.NewSearchAdapter[model.User, model.UserId, *model.UserFilter](db, "company_users", buildQuery)
+	// userRepository, err := adapter.NewUserAdapter(db, adapter.BuildQuery)
 	if err != nil {
 		return nil, err
 	}
