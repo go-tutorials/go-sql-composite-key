@@ -5,8 +5,8 @@ import (
 	"database/sql"
 
 	"github.com/core-go/health"
+	h "github.com/core-go/health/sql"
 	"github.com/core-go/log/zap"
-	h "github.com/core-go/sql/health"
 
 	"go-service/internal/user"
 )
