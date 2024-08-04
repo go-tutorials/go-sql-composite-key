@@ -5,7 +5,7 @@ create table if not exists company_users (
   email varchar(120),
   phone varchar(45),
   date_of_birth date,
-  primary key (id)
+  primary key (company_id, user_id)
 );
 
 insert into company_users (company_id, user_id, username, email, phone, date_of_birth) values ('marvel', 'ironman', 'tony.stark', 'tony.stark@gmail.com', '0987654321', '1963-03-25');
